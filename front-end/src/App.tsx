@@ -77,6 +77,22 @@ class App extends React.Component<Props, GameState> {
     }
   }
 
+  /**
+   * undo button
+   * @param x 
+   * @param y 
+   * @returns 
+   */
+  undoGame = async () => {
+    const response = await fetch('/newgame');
+    const json = await response.json();
+    this.setState({
+      cells: json['cells'],
+      currentPlayer: json.currentPlayer,
+      winner: json.winner
+    });
+  }
+
   createCell(cell: Cell, index: number): React.ReactNode {
     if (cell.playable)
       /**
@@ -155,8 +171,15 @@ class App extends React.Component<Props, GameState> {
         </div>
         <div id="bottombar">
           <button onClick={/* get the function, not call the function */this.newGame}>New Game</button>
-          {/* Exercise: implement Undo function */}
-          <button>Undo</button>
+          <button onClick={async () => {
+            const response = await fetch('/undo');
+            const json = await response.json();
+            this.setState({
+              cells: json['cells'],
+              currentPlayer: json.currentPlayer,
+              winner: json.winner
+            });
+          }}>Undo</button>
         </div>
       </div>
     );
